@@ -1,6 +1,6 @@
 -- GASEOSAS DEL VALLE S.A.
--- Script: functions.sql
--- Descripción: Creación de funciones personalizadas.
+-- Script: gdv_functions.sql
+-- Descripción: Funciones personalizadas.
 
 USE gaseosas_del_valle;
 
@@ -8,7 +8,8 @@ DELIMITER $$
 
 CREATE FUNCTION fn_calcular_total_con_iva(p_id_pedido INT)
 RETURNS DECIMAL(12,2)
-DETERMINISTIC
+NOT DETERMINISTIC
+READS SQL DATA
 BEGIN
     DECLARE v_total DECIMAL(12,2);
 
@@ -26,7 +27,8 @@ DELIMITER $$
 
 CREATE FUNCTION fn_validar_stock(p_id_producto INT, p_cantidad INT)
 RETURNS VARCHAR(100)
-DETERMINISTIC
+NOT DETERMINISTIC
+READS SQL DATA
 BEGIN
     DECLARE v_stock_actual INT;
 
@@ -40,7 +42,27 @@ BEGIN
     ELSE
         RETURN CONCAT('Stock insuficiente: solo hay ', v_stock_actual, ' unidades disponibles.');
     END IF;
+END $$
 
+DELIMITER ;
+
+-- Promedio de pedidos por cliente
+
+DELIMITER $$
+
+CREATE FUNCTION fn_calcular_promedio_pedidos_cliente(p_id_cliente INT)
+RETURNS DECIMAL(12,2)
+NOT DETERMINISTIC
+READS SQL DATA
+BEGIN
+    DECLARE v_promedio DECIMAL(12,2);
+
+    SELECT AVG(total_sin_iva)
+    INTO v_promedio
+    FROM pedidos
+    WHERE id_cliente = p_id_cliente;
+
+    RETURN COALESCE(v_promedio, 0.00);
 END $$
 
 DELIMITER ;
