@@ -43,3 +43,8 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- El trigger solo calcula totales para pedidos futuros; esto llena los del seed
+UPDATE pedidos
+SET total_con_iva = fn_calcular_total_con_iva(id_pedido),
+    total_sin_iva = fn_calcular_total_con_iva(id_pedido) / 1.19;
