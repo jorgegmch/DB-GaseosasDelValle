@@ -17,7 +17,9 @@ SELECT p.id_pedido, c.nombre_completo, s.nombre_sede, p.fecha_pedido, p.total_co
 FROM pedidos p
 JOIN clientes c ON p.id_cliente = c.id_cliente
 JOIN sedes s    ON p.id_sede    = s.id_sede
-WHERE p.fecha_pedido BETWEEN '2026-02-01' AND '2026-02-28'
+-- Rango semiabierto: incluye todo el 28 de febrero (fecha_pedido es DATETIME)
+WHERE p.fecha_pedido >= '2026-02-01'
+    AND p.fecha_pedido <  '2026-03-01'
 ORDER BY p.fecha_pedido;
 
 -- Consulta 3: Productos más vendidos
